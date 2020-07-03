@@ -99,7 +99,7 @@ namespace FastFind
             this.Path = String.Empty;
             this.useRegEx = false;
             this.IncludeDirectories = false;
-            this.NoStatistics = false;
+            this.NoStatistics = true;
             this.Patterns = new List<Regex>();
             this.rawPatterns = new List<String>();
         }
