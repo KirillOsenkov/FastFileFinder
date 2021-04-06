@@ -11,6 +11,7 @@ namespace FastFind
 {
     using System;
     using System.Collections.Concurrent;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.Globalization;
@@ -215,20 +216,26 @@ namespace FastFind
         /// </param>
         private static void WriteResultsBatched(CancellationToken canceller, Int32 batchSize = 10)
         {
-            var sb = new StringBuilder(batchSize * 260);
+            //var sb = new StringBuilder(batchSize * 260);
             var lineCount = 0;
+
+            var list = new List<string>();
 
             try
             {
                 foreach (var line in ResultsQueue.GetConsumingEnumerable(canceller))
                 {
-                    sb.AppendLine(line);
+                    list.Add(line);
+
+                    //sb.AppendLine(line);
                     lineCount++;
 
                     if (lineCount > batchSize)
                     {
-                        Console.Write(sb);
-                        sb.Clear();
+                        Flush(list);
+
+                        //Console.Write(sb);
+                        //sb.Clear();
                         lineCount = 0;
                     }
                 }
@@ -239,11 +246,23 @@ namespace FastFind
             }
             finally
             {
-                if (sb.Length > 0)
-                {
-                    Console.Write(sb);
-                }
+                Flush(list);
+                //if (sb.Length > 0)
+                //{
+                //    Console.Write(sb);
+                //}
             }
+        }
+
+        private static void Flush(List<string> list)
+        {
+            list.Sort();
+            foreach (var item in list)
+            {
+                Console.WriteLine(item);
+            }
+
+            list.Clear();
         }
 
         /// <summary>
